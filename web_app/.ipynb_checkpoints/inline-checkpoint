@@ -1,0 +1,79 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "66184132",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sqlalchemy import create_engine\n",
+    "from faker import Faker\n",
+    "from sqlalchemy.types import Integer, String, Date, Float, DateTime\n",
+    "import pandas as pd\n",
+    "import datetime\n",
+    "import numpy as np\n",
+    "import re\n",
+    "from time import time\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "cd0dc3ee",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "SQLACHEMY_DATABASE_URL = \"sqlite:///../instance/hopital.sqlite\"\n",
+    "engine = create_engine(SQLACHEMY_DATABASE_URL, connect_args={\"check_same_thread\": False})"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "84486794",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bichat_mois = np.array([6768, 6302, 6802, 6401, 6718,6612,6499,6281,6529,7049,6251,6598])\n",
+    "weights_mois = bichat_mois/bichat_mois.sum()\n",
+    "passage_jour = np.array([9653,8653,8503,8585,8592,8605,8505])\n",
+    "weights_jour = passage_jour/passage_jour.sum()\n",
+    "weekday_month = ((weights_jour*94900).round().reshape(-1,1) * weights_mois).round()\n",
+    "weekday_month = weekday_month.T\n",
+    "days_2019 = pd.Series([1]*365, pd.date_range(start=\"2019\", end=\"2019-12-31\", freq='D'))\n",
+    "weekday_month_daily = (weekday_month / days_2019.groupby(lambda x: (x.month, x.dayofweek)).sum().to_numpy().reshape(-1,7)).round()\n",
+    "passage_dayofyear = pd.Series([weekday_month_daily[day.month-1, day.dayofweek] for day in days_2019.index], index = days_2019.index)\n",
+    "activite_heure = np.array([2.5, 2, 1.8,1.6, 1.5, 1.47, 1.6, 1.8, 3.1, 5, 6.7, 6.8, 6.2, 6, 6.2,6.1, 5.9, 5.8,5.75,5.7, 5.6,5.4,4.8,3.5])\n",
+    "weights_heure = activite_heure / activite_heure.sum()\n",
+    "passage_dayofyear_hourly = (passage_dayofyear.to_numpy().reshape(-1,1)*weights_heure).round()\n",
+    "hours_year = pd.date_range(start='2019-01-01', end='2019-12-31 23:00:00', freq='H')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "c4725712",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%time date_arrivee_2019 = pd.DatetimeIndex([hour + pd.Timedelta(f'{i*(60/step)} min') for hour, step in zip(hours_year, passage_dayofyear_hourly.flatten()) for i in range(int(step))])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "89548133",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "tmp = pd.Series([1]*94895, date_arrivee_2019)"
+   ]
+  }
+ ],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

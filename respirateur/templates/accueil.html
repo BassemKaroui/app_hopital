@@ -1,0 +1,39 @@
+<!-- On hérite de la page de base -->
+{% extends 'base.html' %}
+
+
+
+<!-- Ajout du contenu -->
+{% block content %}
+
+<!-- Contenu Consultation -->
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active" aria-current="page">
+				<h5>ACCUEIL</h5>
+			</li>
+		</ol>
+	</nav>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+
+	$(document).ready(function () {
+
+		activerMenu("menuAccueil")
+
+	//---------------------------------------------
+	// Fonctions
+	//---------------------------------------------
+
+
+
+</script>
+{% endblock %}

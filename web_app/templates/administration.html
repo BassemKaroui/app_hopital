@@ -1,0 +1,466 @@
+<!-- On hérite de la page de base -->
+{% extends 'base.html' %}
+
+
+
+<!-- Ajout du contenu -->
+{% block content %}
+
+<!-- Contenu Consultation -->
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active" aria-current="page">
+				<h5>ADMINISTRATION</h5>
+			</li>
+		</ol>
+	</nav>
+</div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="card">
+				<div class="card-header">
+					<ul class="nav nav-tabs card-header-tabs" id="administration-list" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" href="#accueil" role="tab" aria-controls="accueil"
+								aria-selected="true">Accueil</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#salleAttente" role="tab" aria-controls="salleAttente"
+								aria-selected="false">Salle d'Attente</a>
+						</li>
+					</ul>
+				</div>
+				<div class="card-body">
+
+					<div class="tab-content mt-3">
+						<div class="tab-pane active" id="accueil" role="tabpanel">
+
+							<!-- BARRE DE RECHERCHE NUMERO DE SS GESTION ADMINISTRATIVE -->
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-group">
+										<label>Recherche par numero de securite social :</label>
+										<input type="text" class="form-control" id="keySearch">
+										<p><em id="result_search_status"></em></p>
+									</div>
+								</div>
+
+							</div>
+
+
+							<!-- BOUTON NOUVEAU PATIENT -->
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="form-row">
+										<div class="col-md-12" style="margin-top:20px">
+											<button class="btn btn-primary" id="btnAjoutConsultation"
+												type="submit">Nouvelle Consultation</button>
+										</div>
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+
+						<div class="tab-pane" id="salleAttente" role="tabpanel" aria-labelledby="salleAttente-tab">
+							<!-- DEBUT LIGNE TABLEAU DES CONSULTATIONS DANS LA SALLE D'ATTENTE -->
+							<div class="row">
+								<!-- DEBUT COLONNE TABLEAU DES PIECES -->
+								<div class="col-sm-12">
+									<div class="card">
+										<div class="card-header">
+											Liste des consultations
+										</div>
+										<div class="card-body">
+											<!-- DEBUT TABLEAU DES CONSULTATIONS -->
+											<table id="tableauConsultations" class="table table-bordered hover">
+												<thead>
+													<tr>
+														<th>Numero</th>
+														<th>Nom</th>
+														<th>Prenom</th>
+														<th>Statut</th>
+														<th>Arrivee</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table> <!-- FIN TABLEAU DES CONSULTATIONS -->
+										</div>
+
+									</div>
+								</div> <!-- FIN COLONNE TABLEAU DES CONSULTATIONS -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<!-- Modal Header -->
+			<div class="modal-header">
+				<h4 class="modal-title">Dossier Patient</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<!-- Modal body -->
+			<div class="modal-body">
+
+				<!-- DEBUT PREMIERE LIGNE BARRE DE NAVIGATION GESTION ADMINISTRATIVE -->
+				<div class="row">
+					<div class="col-sm-6">
+						<form>
+							<fieldset id="fieldsetleft1">
+								<div class="form-group">
+									<label for="nomTextInput">Nom</label>
+									<input type="text" id="nomTextInput" class="form-control" placeholder="Nom">
+									<label for="prenomTextInput">Prenom</label>
+									<input type="text" id="prenomTextInput" class="form-control" placeholder="Prenom">
+									<label for="dateNaissanceTextInput">Date de Naissance</label>
+									<input type="text" id="dateNaissanceTextInput" class="form-control"
+										placeholder="Date de Naissance">
+								</div>
+							</fieldset>
+						</form>
+					</div>
+
+					<div class="col-sm-6">
+						<form>
+							<fieldset id="fieldsetright1">
+								<div class="form-group">
+									<label for="ageTextInput">Age</label>
+									<input type="text" id="ageTextInput" class="form-control" placeholder="Age">
+									<label for="sexSelect">Sexe</label>
+									<select id="sexSelect" class="form-control">
+										<option value="M">M</option>
+										<option value="F">F</option>
+										<option value="I">I</option>
+									</select>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+
+				</div> <!-- FIN PREMIERE LIGNE BARRE DE NAVIGATION GESTION ADMINISTRATIVE -->
+
+				<!-- DEBUT DEUXIEME LIGNE BARRE DE NAVIGATION GESTION ADMINISTRATIVE -->
+				<div class="row">
+					<div class="col-sm-6">
+						<form>
+							<fieldset id="fieldsetleft2">
+								<div class="form-group">
+									<label for="numAdresseTextInput">Numero de rue</label>
+									<input type="text" id="numAdresseTextInput" class="form-control"
+										placeholder="Numero de rue">
+									<label for="rueTextInput">Rue</label>
+									<input type="text" id="rueTextInput" class="form-control" placeholder="Rue">
+								</div>
+							</fieldset>
+						</form>
+					</div>
+
+					<div class="col-sm-6">
+						<form>
+							<fieldset id="fieldsetright2">
+								<div class="form-group">
+									<label for="codePostalTextInput">Code Postal</label>
+									<input type="text" id="codePostalTextInput" class="form-control"
+										placeholder="Code Postal">
+									<label for="villeTextInput">Ville</label>
+									<input type="text" id="villeTextInput" class="form-control" placeholder="Ville">
+									<label for="regionTextInput">Region</label>
+									<input type="text" id="regionTextInput" class="form-control" placeholder="Region">
+								</div>
+							</fieldset>
+						</form>
+					</div>
+
+				</div> <!-- FIN DEUXIEME LIGNE BARRE DE NAVIGATION GESTION ADMINISTRATIVE -->
+
+				<!-- DEBUT TROISIEME LIGNE BARRE DE NAVIGATION GESTION ADMINISTRATIVE -->
+				<div class="row">
+					<div class="col-sm-12">
+						<form>
+							<fieldset id="fieldConsultation">
+								<div class="form-group">
+									<label for="motifRecours">Motif du Recours</label>
+									<select id="motifRecours" class="form-control">
+										<option id=1>Cephalees, pathologies neurologiques hors SNP</option>
+										<option id=2>Demande de certificats, de depistage, de conseils</option>
+										<option id=3>Dermato-allergologie et atteintes cutaneo-muqueuses</option>
+										<option id=4>Difficultes psychosociales, socio-economiques</option>
+										<option id=5>Douleurs abdominales, pathologies digestives</option>
+										<option id=6>Douleurs pelviennes, pathologies uro-genitales</option>
+										<option id=7>Douleurs thoraciques, pathologies cardio-vasculaires</option>
+										<option id=8>Dyspnees, pathologies des voies aeriennes inferieures</option>
+										<option id=9>Fievre et infectiologie generale</option>
+										<option id=10>Iatrogenie et complication post chirurgicale SAI</option>
+									</select>
+									<label for="modeTransport">Mode de Transport</label>
+									<select id="modeTransport" class="form-control">
+										<option id=1>PERSO : moyen personnels</option>
+										<option id=2>AMBU : ambulance publique ou privee</option>
+										<option id=3>VSAB : vehicule de secours et d'aide au blesses</option>
+										<option id=4>SMUR : vehicule de Service Mobile d'Urgence et de Réanimation
+										</option>
+										<option id=5>HELI : helicoptere</option>
+										<option id=6>FO : force de l'ordre (police, gendarmerie)</option>
+									</select>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+
+				</div> <!-- FIN TROISIEME LIGNE BARRE DE NAVIGATION GESTION ADMINISTRATIVE -->
+
+
+			</div>
+
+			<!-- Modal footer -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="btnValiderAjoutConsultation"
+					data-dismiss="modal">Valider</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+
+	$(document).ready(function () {
+
+		activerMenu("menuAdmin")
+
+		$('#Deconnexion').click(function () {
+			deconnect()
+		})
+
+		$('#administration-list a').on('click', function (e) {
+			e.preventDefault()
+			$(this).tab('show')
+			getConsultations()
+		})
+
+		$('#btnAjoutConsultation').click(function () {
+			$('#myModal').modal('show');
+		})
+
+		$('#btnValiderAjoutConsultation').click(function () {
+			postAddConsultation();
+		})
+
+
+		//gestion recherche par numero de securite sociale
+		$('#keySearch').on("keypress", function (e) {
+
+			/* ENTER PRESSED*/
+
+			if (e.keyCode == 13) {
+				/* FOCUS ELEMENT */
+				var inputs = $(this);
+				var keySearch = inputs[0].value
+				postSearch(keySearch);
+			}
+
+		});
+
+
+
+	});
+
+	//---------------------------------------------
+	// Fonctions
+	//---------------------------------------------
+
+
+
+	//RECUPERATION DE LA TABLE DES CONSULTATIONS
+	function getConsultations() {
+
+		$.ajax({
+			url: "/administration/getConsultations",     //Url du service
+			type: "Get",       //Le type d'appel
+			dataType: "json",  //Le format des données reçue
+			success: function (response) {
+				var json = JSON.parse(JSON.stringify(response));
+				datas = json.data
+				console.log(datas)
+
+				//Si c'est déjà un datatable, je le reconstruis
+				if ($.fn.dataTable.isDataTable('#tableauConsultations')) {
+					table = $('#tableauConsultations').DataTable();
+					table.destroy();
+				}
+
+				table = $('#tableauConsultations').DataTable({
+					"paging": false,
+					"ordering": false,
+					"info": false,
+					"searching": false,
+					"columns": [
+						{ "data": "id" },
+						{ "data": "nom" },
+						{ "data": "prenom" },
+						{ "data": "status" },
+						{ "data": "date_arrivee" }],
+					data: json.data //J'alimente mon tableau avec la reception JSON
+				}); //Fin tableau			
+
+			}
+
+		}); //Fin Ajax
+	}
+
+	//envoie du numero de securite sociale (keysearch) a l'API de recherche 
+	function postAddConsultation() {
+
+		//Preparation du message json
+		jsonObj = [];
+		item = {};
+		item["ssn"] = $("#keySearch").val();
+		item["nom"] = $("#nomTextInput").val();
+		item["prenom"] = $("#prenomTextInput").val();
+		item["dateNaissance"] = $("#dateNaissanceTextInput").val();
+		item["age"] = $("#ageTextInput").val();
+		item["sexe"] = $("#sexSelect").val();
+		item["numRue"] = $("#numAdresseTextInput").val();
+		item["rue"] = $("#rueTextInput").val();
+		item["codePostal"] = $("#codePostalTextInput").val();
+		item["ville"] = $("#villeTextInput").val();
+		item["region"] = $("#regionTextInput").val();
+		item["motifRecours"] = $("#motifRecours").find('option:selected').attr('id');
+		console.log(item["motifRecours"])
+		item["modeTransport"] = $("#modeTransport").find('option:selected').attr('id');
+		jsonObj.push(item);
+		datasJson = JSON.stringify(jsonObj)
+
+		//Envoyer le message
+		$.ajax({
+			url: "/administration/ajoutConsultation",
+			contentType: "application/json; charset=utf-8", //Type de donnees envoyees
+			dataType: "json", //Type de donnees recues
+			type: "POST",    //Type de requete : post car j'envoie des infos au service
+			data: datasJson,  //Donnees envoyees
+			success: function (response) {
+				//Recuperer le resultat de la recherche depuis le serveur
+				var json = JSON.parse(JSON.stringify(response));
+				console.log(response)
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log(textStatus)
+			}
+
+		}); //Fin Ajax
+
+	}
+
+	//envoie du numero de securite sociale (keysearch) a l'API de recherche 
+	function postSearch(keySearch) {
+
+		//Preparation du message json
+		jsonObj = [];
+		item = {};
+		item["message"] = keySearch;
+		jsonObj.push(item);
+		datasJson = JSON.stringify(jsonObj)
+
+		//Envoyer le message
+		$.ajax({
+			url: "/administration/searchByNumSS",
+			contentType: "application/json; charset=utf-8", //Type de donnees envoyees
+			dataType: "json", //Type de donnees recues
+			type: "POST",    //Type de requete : post car j'envoie des infos au service
+			data: datasJson,  //Donnees envoyees
+			success: function (response) {
+				//Recuperer le resultat de la recherche depuis le serveur
+				jsonResponse = JSON.parse(JSON.stringify(response))
+				var datas = jsonResponse.data;
+				console.log(datas)
+				var search_status = datas[0]['search_status'];
+				console.log(search_status)
+				if (search_status == false) {
+					$("#result_search_status").text("Numero de securite sociale non valide");
+					$("#result_search_status").removeClass('text-success');
+					$("#result_search_status").addClass('text-danger');
+					$("#result_search_status").addClass('small');
+					$('#fieldsetleft1').prop('disabled', false);
+					$('#fieldsetright1').prop('disabled', false);
+					$('#fieldsetleft2').prop('disabled', false);
+					$('#fieldsetright2').prop('disabled', false);
+				} else {
+					$("#result_search_status").text("Numero de securite sociale valide");
+					$("#result_search_status").removeClass('text-danger');
+					$("#result_search_status").addClass('text-success');
+					$("#result_search_status").addClass('small');
+					$('#fieldsetleft1').prop('disabled', true);
+					$('#fieldsetright1').prop('disabled', true);
+					$('#fieldsetleft2').prop('disabled', true);
+					$('#fieldsetright2').prop('disabled', true);
+				}
+
+				//Ajouter les informations du patient depuis la base de donnees des patients
+				if (search_status == true) {
+					$('#nomTextInput').val(datas[0]['nom'])
+					$('#prenomTextInput').val(datas[0]['prenom'])
+					$('#dateNaissanceTextInput').val(datas[0]['dateNaissance'])
+					$('#ageTextInput').val(datas[0]['age'])
+					if (datas[0]['sexe'] == "M") {
+						$('#sexSelect').val(1)
+					} else if (datas[0]['sexe'] == "F") {
+						$('#sexSelect').val(2)
+					} else {
+						$('#sexSelect').val(3)
+					}
+					$('#numAdresseTextInput').val(datas[0]['numRue'])
+					$('#rueTextInput').val(datas[0]['rue'])
+					$('#villeTextInput').val(datas[0]['ville'])
+					$('#regionTextInput').val(datas[0]['region'])
+					$('#codePostalTextInput').val(datas[0]['codePostal'])
+				} else {
+					$('#nomTextInput').val(null)
+					$('#prenomTextInput').val(null)
+					$('#dateNaissanceTextInput').val(null)
+					$('#ageTextInput').val(null)
+					$('#sexSelect').val(null)
+					$('#numAdresseTextInput').val(null)
+					$('#rueTextInput').val(null)
+					$('#villeTextInput').val(null)
+					$('#regionTextInput').val(null)
+					$('#codePostalTextInput').val(null)
+				}
+
+				//
+
+
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log(textStatus)
+			}
+
+		}); //Fin Ajax
+
+	}
+
+
+</script>
+{% endblock %}

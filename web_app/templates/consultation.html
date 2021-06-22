@@ -1,0 +1,856 @@
+<!-- On hérite de la page de base -->
+{% extends 'base.html' %}
+
+
+<!-- Ajout du contenu -->
+{% block content %}
+
+<!-- Contenu Consultation -->
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item active" aria-current="page">
+			<h5>CONSULTATION</h5>
+		</li>
+	</ol>
+</nav>
+
+<!-- Information patient -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-8">
+
+			<form>
+				<div class="form-row">
+					<div class="form-group col-md-3">
+						<label for="inputPatient">Numero Patient</label>
+						<input type="text" class="form-control" id="inputCode" placeholder="Code Patient">
+						<p><em id="result_search_status"></em></p>
+					</div>
+					<div class="form-group col-md-4">
+						<label for="input">Date Ouverture</label>
+						<input type="text" class="form-control" id="inputHeure" placeholder="heure">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group col-md-3">
+						<label for="input">Nom</label>
+						<input type="text" class="form-control" id="inputNomSoignant" placeholder="Nom">
+					</div>
+					<div class="form-group col-md-3">
+						<label for="input">Prénom</label>
+						<input type="text" class="form-control" id="inputPreSoignant" placeholder="Prénom">
+					</div>
+					<div class="form-group col-md-3">
+						<label for="input">Role</label>
+						<input type="text" class="form-control" id="inputRole" placeholder="Role">
+					</div>
+					<div class="form-group col-md-4">
+						<input type="hidden" class="form-control" id="inputRoleId">
+					</div>
+
+				</div>
+			</form>
+		</div>
+		<div class="col-4">
+			<form>
+				<div class="form-group row">
+					<label for="montant" class="col-sm-3 col-form-label">Montant</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="montant" placeholder="Montant à payer">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="inputPassword" class="col-sm-3 col-form-label">Paiement</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="paiement" placeholder="Paiement">
+					</div>
+				</div>
+				<div class="form-group row">
+					<label for="inputPassword" class="col-sm-3 col-form-label">Reste à payer</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="reste" placeholder="Reste à payer">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<br>
+<br>
+
+<!-- Consultation / Anamnese / Actes médicaux -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-6">
+			<div class="card">
+				<!-- Header card -->
+				<div class="card-header">
+					<ul class="nav nav-tabs card-header-tabs" id="consultation-list" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" href="#general" role="tab" aria-controls="general"
+								aria-selected="true">Consultation</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#anamnese" role="tab" aria-controls="anamnese"
+								aria-selected="false">Anamnese</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#actesmedicaux" role="tab" aria-controls="anactesmedicauxamnese"
+								aria-selected="false">Actes médicaux</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- Body card -->
+				<div class="card-body">
+
+					<div class="tab-content mt-3" id="tabconsult">
+						<div class="tab-pane active" id="general" role="tabpanel">
+							<h5 class="pb-2 mb-3 font-italic border-bottom">
+								Patient
+							</h5>
+							<div class="form-row">
+								<div class="form-group col-md-2">
+									<label for="inputSexe">Sexe</label>
+									<input type="text" class="form-control" id="inputSexe" placeholder="Sexe">
+								</div>
+								<div class="form-group col-md-4">
+									<label for="inputNom">Nom</label>
+									<input type="text" class="form-control" id="inputNom" placeholder="Nom patient">
+								</div>
+								<div class="form-group col-md-4">
+									<label for="inputPrenom">Prénom</label>
+									<input type="text" class="form-control" id="inputPrenom"
+										placeholder="Prénom patient">
+								</div>
+								<div class="form-group col-md-4">
+									<input type="hidden" class="form-control" id="inputIdConsultation">
+								</div>
+
+							</div>
+							<div class="form-row">
+								<div class="form-group col-md-2">
+									<label for="inputAge">Age</label>
+									<input type="text" class="form-control" id="inputAge" placeholder="Age">
+								</div>
+								<div class="form-group col-md-6">
+									<label for="inputNaissance">Date de naissance</label>
+									<input type="text" class="form-control" id="inputNaissance"
+										placeholder="Date de naissance patient">
+								</div>
+							</div>
+
+							<h5 class="pb-2 mb-3 font-italic border-bottom">
+								Motif de Recours
+							</h5>
+							<form>
+								<fieldset id="fieldConsultation">
+									<div class="form-group">
+										<select id="motifRecours" class="form-control">
+											<option selected>Choose...</option>
+										</select>
+									</div>
+								</fieldset>
+							</form>
+							<h5 class="pb-2 mb-3 font-italic border-bottom">
+								Gravité
+							</h5>
+							<form>
+								<fieldset id="fieldGravite">
+									<div class="form-group">
+										<select id="gravite" class="form-control">
+											<option selected>Choose...</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5">5</option>
+											<option value="P">P</option>
+											<option value="D">D</option>
+										</select>
+									</div>
+								</fieldset>
+							</form>
+							<h5 class="pb-2 mb-3 font-italic border-bottom">
+								Transport
+							</h5>
+							<form>
+								<fieldset id="fieldTransport">
+									<div class="form-group">
+										<select id="transport" class="form-control">
+											<option selected>Choose...</option>
+
+										</select>
+									</div>
+								</fieldset>
+							</form>
+
+						</div>
+
+						<div class="tab-pane" id="anamnese" role="tabpanel" aria-labelledby="history-tab">
+							<h5 class="pb-2 mb-3 font-italic border-bottom">
+								Diagnostic
+							</h5>
+							<div class="form-horizontal">
+								<div class="form-group">
+									<div class="col-md-12">
+										<textarea class="form-control" rows="3" placeholder="Diagnostic du patient"
+											id="textanamnese"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="tab-pane" id="actesmedicaux" role="tabpanel" aria-labelledby="history-tab">
+							<h5 class="pb-2 mb-3 font-italic border-bottom">
+								Filtrage Actes Médicaux
+							</h5>
+
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<label class="input-group-text" for="inputGroupSelect01">Filtrer par</label>
+								</div>
+								<select class="custom-select" name='GroupSelect' id="GroupSelect">
+									<option value="1">Libelle</option>
+									<option value="2">Code</option>
+								</select>
+								<input type="text" class="form-control" id="search-mot" placeholder="Search">
+							</div>
+
+							<table class="table hover" id="table_id">
+								<tr></tr>
+							</table>
+
+							<table class="table hover" id="tabActes">
+								<thead class="thead-dark">
+									<tr>
+										<th scope="col">N°</th>
+										<th scope="col">Code</th>
+										<th scope="col">Description</th>
+										<th scope="col">Tarification</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+
+
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="col-6">
+			<div class="card">
+				<!-- Header card -->
+				<div class="card-header">
+					<h6>Historique des consultations</h6>
+
+				</div>
+
+				<!-- Body card -->
+				<div class="card-body">
+
+					<table class="table hover" id="tabConsultations">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">N°</th>
+								<th scope="col">Date</th>
+								<th scope="col">Anamnese</th>
+								<th scope="col">Gravite</th>
+							</tr>
+						</thead>
+						<tbody>
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="ModalSauvegarde">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Sauvegarde du dossier</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Voulez vous sauvegarder la consultation du dossier?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="BtnSauvegarde"
+					data-dismiss="modal">Sauvegarder</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+
+	$(document).ready(function () {
+
+		activerMenu("menuConsultation")
+
+		// Récupération du User sur la page 
+		GetUser()
+
+		$('#Deconnexion').click(function () {
+
+			// Modal pour sauvegarde
+			code = $('#inputCode').val().length
+			num_ssn = $('#result_search_status').text()
+			console.log(code)
+			console.log(num_ssn.length)
+			console.log(num_ssn.includes("non valide"))
+			console.log("USER ID", $("#inputRoleId").val())
+
+			if (code == 0 || num_ssn.length == 0 || num_ssn.includes("non valide")) {
+				deconnect()
+			} else {
+				console.log("patient")
+				$('#ModalSauvegarde').modal('show');
+			}
+
+
+		})
+
+		$('#consultation-list a').on('click', function (e) {
+			e.preventDefault()
+			$(this).tab('show')
+		})
+
+
+		// Numero Patient Enter	
+		$('#inputCode').on("keypress", function (e) {
+
+			/* ENTER PRESSED*/
+
+			if (e.keyCode == 13) {
+
+				// On clear les données de la page
+				Clear_Patient()
+
+				/* FOCUS ELEMENT */
+				var inputs = $(this).parents("form").eq(0).find(":input");
+				console.log(inputs[0].value);
+				code_patient = inputs[0].value
+
+				console.log(!(code_patient == ''))
+
+				postModifyConsultation(code_patient);
+
+
+			}
+		});
+
+
+		// Ajout des Motif de Recours dans Select option
+		listerMotifs()
+
+
+		// On clear lorsque l'on change de filtre
+		$('#GroupSelect').on('change', function () {
+
+			// On vide la class de search
+			$('#search-mot').val('')
+		});
+
+		// On clear lorsque l'on change de filtre
+		$('#tabconsult').on('change', function () {
+
+			// On vide la class de search
+			$('#search-mot').val('')
+		});
+
+
+		// Recherche Actes médical
+		$("#search-mot").keyup(function () {
+
+			mot_cherche = $("#search-mot").val()
+
+			console.log(mot_cherche)
+
+			if (mot_cherche == "") {
+				$('#table_id > tbody >tr').remove()
+			}
+			else {
+
+				// On réaffiche la table et on ajoutz a l'aide de searchcode les lignes à l'intérieur
+				$('#table_id tbody').show()
+
+				searchCode()
+
+				// on supprime les éléments à la fin de la recherche
+				if ($.fn.dataTable.isDataTable('#table_id')) {
+					table = $('#table_id').DataTable();
+					table.destroy();
+				}
+
+			}
+		});
+
+		//Ajout par click dans la table des actes médicaux
+		$('#table_id tbody').on('click', 'tr', function () {
+
+			// A partir de la table de recherche on recupere la selection
+			var table = $('#table_id').DataTable();
+			datas_click = table.row(this).data()
+
+			// on cache la table de recherche
+			$('#table_id tbody').hide()
+
+
+			console.log(datas_click)
+
+
+			//---------- AFFICHAGE DU TABLEAU --------------------------
+			//Si c'est déjà un datatable, je le reconstruis
+			// Table actes médicaux
+			var table2 = $('#tabActes').DataTable();
+			if ($.fn.dataTable.isDataTable('#tabActes')) {
+				table2 = $('#tabActes').DataTable();
+				table2.destroy();
+			}
+
+
+			// On ajoute les données à la table actes médicaux
+			table2.row.add([datas_click.id, datas_click.code, datas_click.description, datas_click.tarification]).draw(false);
+
+			// On cacul le montant
+			CalculMontant(0)
+		});
+
+		// Sauvegarde de la consultation 
+		$('#BtnSauvegarde').on('click', function (e) {
+			console.log("SAUVEGARDE")
+			SaveFile()
+
+
+			// On deconnecte
+			deconnect()
+		})
+
+	});
+
+	//---------------------------------------------
+	// Fonctions
+	//---------------------------------------------
+
+	// Clear Data
+	function Clear_Patient() {
+
+		// On supprime les données de la table Actes médical
+		var table2 = $('#tabActes').DataTable();
+		table2.clear().draw();
+		if ($.fn.dataTable.isDataTable('#tabActes')) {
+			table2 = $('#tabActes').DataTable();
+
+			table2.destroy();
+
+		}
+
+		$('#tabConsultations > tbody >tr').remove();
+		$('#montant').val('')
+		$('#reste').val('')
+		$("#textanamnese").val('')
+		$("#gravite").val($("#gravite option:first").val())
+		$("#motifRecours").val($("#motifRecours option:first").val())
+		$("#transport").val($("#transport option:first").val())
+		$("#inputAge").val('');
+		$("#inputNom").val('');
+		$("#inputPrenom").val('');
+		$("#inputSexe").val('');
+		$("#inputNaissance").val('');
+
+
+	}
+
+	// Sauvegarde Dossier
+	function SaveFile() {
+
+		//Preparation du message json
+
+		jsonObj = [];
+		item = {};
+		item["actes_medicaux"] = [];
+		item["Sexe"] = $("#inputSexe").val();
+		item["ssn"] = $("#inputCode").val();
+		item["Nom"] = $("#inputNom").val();
+		item["Prenom"] = $("#inputPrenom").val();
+		item["Age"] = $("#inputAge").val();
+		item["Date_naissance"] = $("#inputNaissance").val();
+		item["recours"] = $("#motifRecours").val();
+		item["gravite"] = $("#gravite").val();
+		item["transport"] = $("#transport").val();
+		item["anamnese"] = $("#textanamnese").val();
+		item["Date_arrivee"] = $("#inputHeure").val();
+		item["role"] = $("#inputRoleId").val();
+		item["consultation"] = $("#inputIdConsultation").val()
+
+		// Recupération de la table
+		var table2 = $('#tabActes').DataTable();
+
+		if ($.fn.dataTable.isDataTable('#tabActes')) {
+			table2 = $('#tabActes').DataTable();
+			table2.destroy();
+		}
+
+		//Récupération des datas de la table 2
+		data_table2 = table2.rows().data()
+
+		$.each(data_table2, function (indice, valeur) {
+			item["actes_medicaux"].push(valeur);
+			console.log(valeur)
+
+		});
+
+
+		jsonObj.push(item);
+
+		//affichage objet json
+		console.log(jsonObj)
+		datasJson = JSON.stringify(jsonObj)
+
+		//Envoyer le message
+		$.ajax({
+			url: "/consultation/sauvegarde",
+			contentType: "application/json; charset=utf-8", //Type de donnees envoyees
+			dataType: "json", //Type de donnees recues
+			type: "POST",
+			data: datasJson,
+			success: function (response) {
+
+				// Récupération json de retour
+				var json = JSON.parse(JSON.stringify(response));
+				console.log(json)
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log(textStatus)
+			}
+
+		}); //Fin Ajax
+	}
+
+
+	// Calcul du montant à payer
+	function CalculMontant(type_data) {
+
+		// Recupération de la table
+		var table2 = $('#tabActes').DataTable();
+
+		if ($.fn.dataTable.isDataTable('#tabActes')) {
+			table2 = $('#tabActes').DataTable();
+			table2.destroy();
+		}
+
+		// initialisation du montant
+		var montant_total = 0
+
+		//Récupération des datas de la table 2
+		data_table2 = table2.rows().data()
+		console.log(montant_total)
+
+		// Ajout du montant
+		if (type_data == 0) {
+			$.each(data_table2, function (indice, valeur) {
+
+				montant_total = montant_total + parseFloat(valeur[3])
+
+			});
+		} else {
+			$.each(data_table2, function (indice, valeur) {
+
+				montant_total = montant_total + parseFloat(valeur["tarification"])
+
+			});
+
+		}
+
+
+
+		// On ajoute à montant 
+		$('#montant').val(montant_total)
+		$('#reste').val(montant_total)
+
+	}
+
+	// Fonction GetUser And Time
+	function GetUser() {
+
+		$.ajax({
+			url: "/consultation/GetUserTime",
+			type: "Get",
+			dataType: "json",
+			success: function (response) {
+				var json = JSON.parse(JSON.stringify(response));
+				console.log(json)
+				datas = json.data;
+
+				user = datas[0]["user"]
+				date = datas[0]["date"]
+				console.log(datas)
+
+				$("#inputPreSoignant").val(user["prenom"])
+				$("#inputNomSoignant").val(user["nom"])
+				$("#inputHeure").val(date)
+				$("#inputRoleId").val(user["role"])
+
+
+				if (user["role"] == 1) {
+					$("#inputRole").val('infirmier')
+				}
+				else if (user["role"] == 2) {
+					$("#inputRole").val('médecin')
+				}
+
+			}
+		});
+
+	}
+
+
+	// Fonction liste des motifs 
+	function listerMotifs() {
+
+		$.ajax({
+			url: "/consultation/listeMotif",
+			type: "Get",
+			dataType: "json",
+			success: function (response) {
+				var json = JSON.parse(JSON.stringify(response));
+				console.log(json)
+				datas = json.data;
+				transports = json.transport;
+
+				console.log(datas);
+				console.log(transports)
+
+				$.each(datas, function (indice, valeur) {
+					$("#motifRecours").append('<option value="' + valeur.id + '">' + valeur.description + '</option>');
+				});
+
+				$.each(transports, function (indice, valeur) {
+					$("#transport").append('<option value="' + valeur.id + '">' + valeur.description + '</option>');
+				});
+
+			}
+		});
+
+	}
+
+	//envoie du numero de securite sociale (keysearch) a l'API de recherche 
+	function postModifyConsultation(code_patient) {
+
+		//Preparation du message json
+		jsonObj = [];
+		item = {};
+		item["code"] = $("#inputCode").val();
+		jsonObj.push(item);
+		datasJson = JSON.stringify(jsonObj)
+
+		//Envoyer le message
+		$.ajax({
+			url: "/consultation/modifyConsult",
+			contentType: "application/json; charset=utf-8", //Type de donnees envoyees
+			dataType: "json", //Type de donnees recues
+			type: "POST",    //Type de requete : post car j'envoie des infos au service
+			data: datasJson,  //Donnees envoyees
+			success: function (response) {
+				//Recuperer le resultat de la recherche depuis le serveur
+				var json = JSON.parse(JSON.stringify(response));
+				console.log(response);
+
+				datas = json.data;
+				data = datas[0];
+				console.log("data", datas);
+				console.log("statut", json.search_statut)
+
+				search_status = json.search_statut
+
+				if (search_status == false) {
+					$("#result_search_status").text("Numero de securite sociale non valide");
+					$("#result_search_status").removeClass('text-success');
+					$("#result_search_status").addClass('text-danger');
+					$("#result_search_status").addClass('small');
+				} else {
+					$("#result_search_status").text("Numero de securite sociale valide");
+					$("#result_search_status").removeClass('text-danger');
+					$("#result_search_status").addClass('text-success');
+					$("#result_search_status").addClass('small');
+
+					age_patient = data["age"];
+					date_patient = data["date_naissance"];
+					nom_patient = data["nom"];
+					prenom_patient = data["prenom"];
+					sexe_patient = data["sexe"];
+
+					// Affection des valeurs
+					$("#inputAge").val(age_patient);
+					$("#inputNom").val(nom_patient);
+					$("#inputPrenom").val(prenom_patient);
+					$("#inputSexe").val(sexe_patient);
+					$("#inputNaissance").val(date_patient);
+
+					// On récupère les consultations
+					consultations = data["consultations"]
+					console.log(consultations[consultations.length - 1])
+					last_consult = consultations[consultations.length - 1]
+
+					// On parcourt les consultations
+					var table3 = document.getElementById("tabConsultations");
+
+					$.each(consultations, function (indice, valeur) {
+						if (valeur["status"] == "fermé") {
+							console.log(indice, valeur["date_arrivee"].split(" ")[0])
+							$(table3).find('tbody').append("<tr><td>" + valeur.id + "</td><td>" + valeur.date_arrivee.split(" ")[0] + "</td><td>" + valeur.anamnese + "</td><td>" + valeur.gravite + "</td></tr>");
+						}
+
+					});
+
+					// statut de la derniere consultation
+					status_consultation = last_consult["status"]
+					console.log(status_consultation)
+
+					if (status_consultation == "ouvert") {
+						// On affiche les motifs de recours
+						$("#motifRecours").show()
+						$("#transport").show()
+						$("#gravite").show()
+
+						// Si la consultation est ouverte on accede au donnée et on l'affiche sur la page web
+						$("#inputIdConsultation").val(last_consult["id"])
+
+						// Remplissage de l'anamnese 
+						text_anamnese = last_consult["anamnese"]
+						$("#textanamnese").val(text_anamnese)
+
+						// Gravité
+						gravite_value = last_consult["gravite"]
+						$("#gravite").val(gravite_value)
+
+
+						// Acte_medicaux
+						actes_medicaux = last_consult["acte_medicaux"]
+						console.log(actes_medicaux)
+
+						if ($.fn.dataTable.isDataTable('#tabActes')) {
+							table2 = $('#tabActes').DataTable();
+							table2.destroy();
+						}
+
+						table2 = $('#tabActes').DataTable({
+							"paging": false,
+							"ordering": false,
+							"info": false,
+							"searching": false,
+							data: actes_medicaux,
+							columns: [
+								{ "data": "id" },
+								{ "data": "code" },
+								{ "data": "description" },
+								{ "data": "tarification" }
+							]
+						});
+
+						// Transport / Motif de Recours
+						id_transport = last_consult["id_transport"]
+						id_motif = last_consult["id_motif"]
+						console.log("motif", id_motif, "transport", id_transport)
+
+						$("#motifRecours").val(id_motif)
+						$("#transport").val(id_transport)
+
+					} else {
+						$("#motifRecours").hide()
+						$("#transport").hide()
+						$("#gravite").hide()
+					}
+
+					// On calcule le montant 
+					CalculMontant(1)
+
+				}
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log(textStatus)
+			}
+
+		}); //Fin Ajax
+
+	}
+
+	function searchCode() {
+
+		//Preparation du message json
+		jsonObj = [];
+		item = {};
+		item["filtre"] = $("#GroupSelect").val();
+		item["message"] = $("#search-mot").val();
+		jsonObj.push(item);
+		datasJson = JSON.stringify(jsonObj)
+
+		//Envoyer le message
+		$.ajax({
+			url: "/consultation/searchmot",
+			contentType: "application/json; charset=utf-8", //Type de donnees envoyees
+			dataType: "json", //Type de donnees recues
+			type: "POST",
+			data: datasJson,
+			success: function (response) {
+				var json = JSON.parse(JSON.stringify(response));
+
+				datas = json.data;
+
+
+
+				//---------- AFFICHAGE DU TABLEAU --------------------------
+				//Si c'est déjà un datatable, je le reconstruis
+				if ($.fn.dataTable.isDataTable('#table_id')) {
+					table = $('#table_id').DataTable();
+					table.destroy();
+				}
+
+
+				table = $('#table_id').DataTable({
+					"paging": false,
+					"ordering": false,
+					"info": false,
+					"searching": false,
+					data: datas,
+					columns: [
+						{ "data": "id" },
+						{ "data": "code" },
+						{ "data": "description" },
+						{ "data": "tarification" }
+					]
+				});
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				console.log(textStatus)
+			}
+
+		}); //Fin Ajax
+
+	}
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,159 @@
+<!-- On hérite de la page de base -->
+{% extends 'base.html' %}
+
+
+
+<!-- Ajout du contenu -->
+{% block content %}
+
+<div class="container-fluid">
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active" aria-current="page">
+				<h5>RESPIRATEUR CONNECTE</h5>
+			</li>
+		</ol>
+	</nav>
+</div>
+
+<div class="container-fluid">
+
+	<div class="row">
+
+		<div class="col-sm-6">
+		
+			<div>
+				<canvas id="line-chart"></canvas>
+			</div>
+		
+		</div>
+
+
+		<div class="col-sm-3">
+
+			<div class="row">
+				
+				<div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="toast-header">
+					<strong class="mr-auto">Frequence Respiratoire</strong>
+					<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					</div>
+					<div class="toast-body">
+						<span class="badge badge-success">Success</span>
+						23 cycles par minute
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+					<div class="toast-header">
+					<strong class="mr-auto">Volume de reserve inspiraroire VRI</strong>
+					<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					</div>
+					<div class="toast-body">
+						<span class="badge badge-success">Success</span>
+						2563 ml
+					</div>
+				</div>
+			</div>
+
+	</div>
+
+	<img src="/static/assets/img/respiration_unisciel.png" class="img-fluid" alt="Responsive image">
+
+</div>
+
+<div id="log"></div>
+
+
+
+{% endblock %}
+
+
+
+{% block script %}
+<script>
+
+	$(document).ready(function () {
+
+		activerMenu("menuRespirateur")
+
+		$('#Deconnexion').click(function () {
+			deconnect()
+		})
+
+		// Connect to the Socket.IO server.
+        // The connection URL has the following format, relative to the current page:
+        // http[s]://<domain>:<port>[/<namespace>]
+		var socket = io();
+
+		// Event handler for new connections.
+		// The callback function is invoked when a connection with the
+		// server is established.
+		socket.on('connect', function() {
+			socket.emit('my_event', {data: 'I\'m connected!'});
+		});
+
+		// Event handler for server sent data.
+    	// The callback function is invoked whenever the server emits data
+        // to the client. The data is then displayed in the "Received"
+        // section of the page.
+        socket.on('my_response', function(msg) {
+            addData(myChart, parseFloat(msg.count),  parseFloat(msg.data))
+        });
+
+
+ 		//Chart JS
+		var myChart = new Chart(document.getElementById("line-chart"), {
+			type: 'line',
+			data: {
+				labels: [],
+				datasets: [{ 
+					data: [],
+					label: "Patient id00025",
+					borderColor: "#8e5ea2",
+					fill: false
+				}]
+			},
+		options: {
+			title: {
+				display: true,
+				text: 'Respiration Patient'
+				},
+		   
+			scales: {
+				xAxes: [{
+  				type: 'realtime'
+				}]
+			}
+		}
+		});
+
+	});
+
+	//---------------------------------------------
+	// Fonctions
+	//---------------------------------------------
+
+	//Chart JS update data
+	function addData(chart, label, data) {
+		if (label > 100) {
+			chart.data.labels.push(label);
+			chart.data.labels.splice(0, 1);
+			chart.data.datasets[0].data.splice(0,1);
+			chart.data.datasets.forEach((dataset) => {dataset.data.push(data);});
+		} else {
+			chart.data.labels.push(label);
+			chart.data.datasets.forEach((dataset) => {dataset.data.push(data);});
+		}
+		chart.update();
+	}
+
+
+</script>
+{% endblock %}
